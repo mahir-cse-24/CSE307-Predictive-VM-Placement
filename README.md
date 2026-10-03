@@ -56,20 +56,20 @@ See the research directory for the extended discussion.
 
 Install the dependencies with:
 
-python -m pip install -r requirements.txt
+    python -m pip install -r requirements.txt
 
 Run the main experiment with:
 
-python src/vm_placement.py --seeds 10 --out-dir results
+    python src/vm_placement.py --seeds 10 --out-dir results
 
 Run the statistical and bonus analysis with:
 
-python src/research_analysis.py
-python src/sensitivity.py
+    python src/research_analysis.py
+    python src/sensitivity.py
 
 Run tests with:
 
-python -m pytest -q
+    python -m pytest -q
 
 The repository includes a GitHub Actions test workflow.
 
@@ -103,7 +103,7 @@ research/
   experimental_analysis.md
 
 report/
-  term_paper.tex
+  REPORT.md
 
 ## AI assistance disclosure
 
