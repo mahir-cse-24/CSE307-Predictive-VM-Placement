@@ -1,0 +1,3 @@
+policy,forecast_mae,forecast_rmse,forecast_r2,util_std_mean,overload_events,migrations
+Predictive,0.0265227,0.0366656,0.9302284,0.2484700,21.1,27.5
+Predictive-Persistence,0.0270794,0.0375445,0.9268358,0.2428633,16.0,37.6
