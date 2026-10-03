@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="320" viewBox="0 0 780 320">
+<rect width="100%" height="100%" fill="white"/>
+<text x="390" y="26" text-anchor="middle" font-family="Arial" font-size="18">Predictor ablation</text>
+<text x="15" y="82" font-family="Arial" font-size="12">MAE</text>
+<text x="15" y="162" font-family="Arial" font-size="12">Overload</text>
+<text x="15" y="242" font-family="Arial" font-size="12">Migrations</text>
+<g transform="translate(90,60)">
+<rect x="0" y="0" width="55" height="20" fill="#4c78a8"/><text x="65" y="15" font-family="Arial" font-size="12">Regression 0.0265</text>
+<rect x="0" y="28" width="56" height="20" fill="#f58518"/><text x="66" y="43" font-family="Arial" font-size="12">Persistence 0.0271</text>
+</g>
+<g transform="translate(90,140)">
+<rect x="0" y="0" width="105" height="20" fill="#4c78a8"/><text x="115" y="15" font-family="Arial" font-size="12">Regression 21.1</text>
+<rect x="0" y="28" width="80" height="20" fill="#f58518"/><text x="90" y="43" font-family="Arial" font-size="12">Persistence 16.0</text>
+</g>
+<g transform="translate(90,220)">
+<rect x="0" y="0" width="69" height="20" fill="#4c78a8"/><text x="79" y="15" font-family="Arial" font-size="12">Regression 27.5</text>
+<rect x="0" y="28" width="94" height="20" fill="#f58518"/><text x="104" y="43" font-family="Arial" font-size="12">Persistence 37.6</text>
+</g>
+</svg>
