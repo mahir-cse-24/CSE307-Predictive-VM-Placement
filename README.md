@@ -105,10 +105,6 @@ research/
 report/
   REPORT.md
 
-## AI assistance disclosure
-
-ChatGPT was used for implementation scaffolding, debugging support, literature-search support, and document editing. The experiment uses fixed seeds and executable source so that the student can rerun and inspect the work. The CSE-307 brief requires the experimental design, results, and analysis to be understood and owned by the student.
-
 ## Submission
 
 Submit the GitHub repository together with the separate 3-page IEEE PDF report. The course brief also requires a short in-class walkthrough/demo.
