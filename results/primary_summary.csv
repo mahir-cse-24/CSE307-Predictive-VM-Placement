@@ -1,0 +1,4 @@
+policy,utilization_imbalance,pre_shift_util_std,post_shift_util_std,overload_events,post_shift_overload,migrations
+First-Fit,0.2937,0.3886,0.1988,38.8,33.9,31.4
+Best-Fit,0.2918,0.3901,0.1934,33.7,28.7,31.2
+Predictive,0.2485,0.3385,0.1585,21.1,21.1,27.5
