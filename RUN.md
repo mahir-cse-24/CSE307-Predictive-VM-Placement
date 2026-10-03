@@ -19,5 +19,3 @@ python src/sensitivity.py
 Run the unit tests:
 
 python -m pytest -q
-
-The final IEEE paper is supplied as a separate 3-page PDF. The LaTeX source is maintained with the local submission package because the course requires the PDF rather than the editable source.
