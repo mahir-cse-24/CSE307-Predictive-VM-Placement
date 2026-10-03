@@ -1,0 +1,4 @@
+threshold,mean_post_shift_overload,mean_migrations,seeds
+0.85,67.6667,31.0000,100-102
+0.90,41.6667,26.6667,100-102
+0.95,30.6667,26.6667,100-102
