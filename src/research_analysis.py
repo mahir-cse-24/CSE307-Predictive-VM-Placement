@@ -13,7 +13,7 @@ rows = []
 for metric in ["util_std_mean", "overload_events", "migrations"]:
     for baseline in ["First-Fit", "Best-Fit"]:
         d = wide[metric][baseline] - wide[metric]["Predictive"]
-        stat, p = wilcoxon(d)
+        _, p = wilcoxon(d)
         nonzero = d[d != 0]
         ranks = nonzero.abs().rank()
         w_plus = ranks[nonzero > 0].sum()
@@ -50,11 +50,7 @@ if not bonus.empty:
     calibration = []
     for _, group in bonus.assign(conf_bin=bins).groupby("conf_bin", observed=False):
         if len(group):
-            calibration.append((
-                float(group.confidence.mean()),
-                float(group.correct.mean()),
-                len(group),
-            ))
+            calibration.append((float(group.confidence.mean()), float(group.correct.mean()), len(group)))
     ece = float(sum(n * abs(conf - acc) for conf, acc, n in calibration) / len(bonus))
     pd.DataFrame([{
         "decisions": len(bonus),
