@@ -1,0 +1,2 @@
+decisions,accuracy,mean_confidence,brier_score,ece,mean_confidence_correct,mean_confidence_incorrect
+651,0.952381,0.647100,0.160845,0.305281,0.645365,0.681808
