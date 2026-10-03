@@ -1,0 +1,7 @@
+metric,comparison,mean_baseline_minus_predictive,median_baseline_minus_predictive,wilcoxon_p,wins_predictive,rank_biserial
+util_std_mean,Predictive vs First-Fit,0.0452152765,0.0470564823,0.001953125,10,1.0
+util_std_mean,Predictive vs Best-Fit,0.0433181406,0.0445651168,0.001953125,10,1.0
+overload_events,Predictive vs First-Fit,17.7,17.5,0.001953125,10,1.0
+overload_events,Predictive vs Best-Fit,12.6,11.5,0.01953125,8,0.890909091
+migrations,Predictive vs First-Fit,3.9,2.0,0.310546875,6,0.636363636
+migrations,Predictive vs Best-Fit,3.7,6.5,0.1875,6,0.636363636
