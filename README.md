@@ -5,88 +5,110 @@
 **Section:** CSE-24  
 **Course:** CSE-307 Operating Systems, Spring 2026
 
-## Objective
+## Project scope
 
-This project implements Track 4 from the CSE-307 term-paper brief:
+This repository implements Track 4 of the CSE-307 term-paper brief:
 
-- Static First-Fit VM-to-host placement.
-- Static Best-Fit VM-to-host placement.
-- A lightweight online regression model that predicts each VM's near-future load from its recent history and places VMs proactively.
-- A synthetic multi-VM trace with a demand shift at the midpoint.
-- Measurement of host-utilization balance, overload/SLA-violation events, and migrations.
-- Optional rule-based decision explanations with a confidence score.
+- static First-Fit VM-to-host placement,
+- static Best-Fit VM-to-host placement,
+- a lightweight regression model that predicts near-future VM load and places VMs proactively,
+- a synthetic multi-VM workload with a deliberate shift at step 60,
+- host-utilization balance, overload/SLA events, and migration count,
+- the optional explanation-confidence extension.
 
-The assignment requires a repository containing source code, a README, and a results folder with at least one chart/table, plus a 2-3 page report. The implementation follows those deliverables.
+The primary experiment uses 8 homogeneous hosts, 20 VMs, 120 simulation steps, and ten deterministic seeds (100-109). Seven VMs enter a rising demand regime at step 60 and the post-shift phase also contains short bursts.
 
-## Experimental design
+## Main results
 
-- Hosts: 8
-- VMs: 20
-- Simulation steps: 120
-- Shift: step 60
-- SLA overload threshold: host utilization > 100%
-- Predictive proactive threshold: 90%
-- Main experiment: 10 deterministic seeds (100-109)
-
-The first phase has low-to-moderate stationary VM demand. At step 60, seven VMs receive a persistent demand increase and the trace becomes more volatile. This creates a stress case in which placement based only on current load can become stale.
-
-### Regression features
-
-The predictor uses a shared `LinearRegression` model trained online from past VM histories only. Each training example contains:
-
-- the four most recent loads,
-- rolling mean,
-- rolling standard deviation,
-- mean load change,
-- total trend across the recent window.
-
-At each step, the model predicts the next load for every VM. VMs on hosts whose projected load exceeds 90% are candidates for proactive relocation.
-
-### Metrics
-
-- **Host-utilization balance:** mean standard deviation of the eight host utilizations across simulation steps; smaller means more balanced.
-- **Overload/SLA events:** number of host-time observations with utilization > 100%.
-- **Migration count:** total number of VM host changes during the run.
-
-The static baselines are allowed to react only after actual overload is observed. Their migration counter therefore represents reactive repair, while the predictive policy may migrate before the spike causes an SLA violation.
-
-## Run
-
-```bash
-python src/vm_placement.py --seeds 10 --out-dir results
-python src/plot_results.py
-```
-
-The summary is written to `results/summary_by_run.csv`, per-step data to `results/events_by_step.csv`, and optional explanation decisions to `results/bonus_decisions.csv`.
-
-## Test
-
-```bash
-python -m pytest -q
-```
-
-## Main results (10 seeds)
-
-| Policy | Mean utilization std. | Mean overload events | Mean migrations |
+| Policy | Utilization imbalance | Overload/SLA events | Migrations |
 |---|---:|---:|---:|
-| First-Fit | 0.2874 +/- 0.0116 | 34.6 +/- 13.9 | 25.5 +/- 5.0 |
-| Best-Fit | 0.2921 +/- 0.0150 | 40.8 +/- 15.9 | 29.1 +/- 6.0 |
-| Predictive | 0.2468 +/- 0.0132 | 23.9 +/- 27.7 | 27.7 +/- 7.5 |
+| First-Fit | 0.2937 | 38.8 | 31.4 |
+| Best-Fit | 0.2918 | 33.7 | 31.2 |
+| Predictive regression | 0.2485 | 21.1 | 27.5 |
 
-For this synthetic workload, the predictive policy reduced overload events relative to First-Fit by about 31% and relative to Best-Fit by about 41%. It also produced lower utilization imbalance, while using a migration count between the two static baselines. These results describe this workload and configuration only; they are not a universal ranking of placement algorithms.
+Relative to First-Fit, predictive placement reduced mean utilization imbalance by about 15.4% and overload events by about 45.6%. Relative to Best-Fit, the reductions were about 14.9% and 37.4%. Migration count was also lower in the primary experiment.
 
-## Optional explanation-confidence extension
+A paired Wilcoxon check on the ten seeds found lower utilization imbalance for predictive placement than both First-Fit and Best-Fit (p=0.00195 for each comparison). Overload counts were also lower (p=0.00195 versus First-Fit and p=0.01953 versus Best-Fit). Migration-count differences were not statistically significant.
 
-The extension uses a rule-based template generator rather than an external LLM API. Each proactive move receives a natural-language explanation and a confidence score derived from recent one-step prediction error. Across the generated proactive decisions, empirical correctness was 99.28%. Mean confidence was 0.786. The few incorrect decisions had higher mean confidence than the correct decisions, indicating that the simple confidence rule was not well calibrated despite high accuracy.
+## Why the predictive policy is different
 
-## Literature enrichment
+The predictor is a shared online linear-regression model. It uses a six-sample VM history and four recent load values, rolling mean, rolling standard deviation, mean load change, and oldest-to-newest change in the window.
 
-The report was expanded with a short related-work discussion covering VM placement as bin/vector packing, historical-load-based dynamic consolidation, and prediction-aware migration. The external background sources used in the revised paper are Beloglazov and Buyya (2012, DOI 10.1002/cpe.1867), Awad et al. (2022, DOI 10.1016/j.jpdc.2022.08.001), and Jangiti and Shankar Sriram (2018, DOI 10.1016/j.compeleceng.2018.03.029). These sources are used for context only; the experiment, synthetic trace, results, and analysis remain those generated by this repository.
+The model only sees history available before the placement decision. A host projected above the 0.90 proactive threshold becomes a candidate for repair. A VM is moved only when another host can remain at or below the threshold after the move.
+
+## Research extensions
+
+Predictor ablation compares regression with a persistence forecast that carries the latest load forward. Regression gives MAE 0.0265, RMSE 0.0367, and R2 0.9302. Persistence gives MAE 0.0271, RMSE 0.0375, and R2 0.9268. Regression therefore predicts slightly better, while persistence produces fewer overload events but many more migrations. This shows why forecast error and scheduler quality should not be treated as the same objective.
+
+A small threshold-sensitivity pilot tests proactive thresholds of 0.85, 0.90, and 0.95 on seeds 100-102. Mean post-shift overload events are 67.7, 41.7, and 30.7, while mean migrations are 31.0, 26.7, and 26.7. The pilot is a sensitivity check, not a final threshold optimization study.
+
+## Optional +10 explanation-confidence extension
+
+The rule-based extension generated 651 proactive decisions. Empirical correctness was 95.24%, mean confidence was 64.71%, Brier score was 0.161, and expected calibration error was 0.305. Incorrect decisions had slightly higher mean confidence than correct decisions, so the confidence score is not a calibrated probability. Each decision still leaves an auditable explanation record.
+
+## Research context
+
+The paper adds a short related-work review on VM placement as bin/vector packing, dynamic VM consolidation and migration cost, and utilization prediction for overload detection. The main external references are Beloglazov and Buyya (2012), Hsieh et al. (2020), Jangiti and Shankar Sriram (2018), and Awad et al. (2022). Their systems are larger and more complex than this course experiment; they are used to frame the design rather than to claim that this implementation matches a production scheduler.
+
+See the research directory for the extended discussion.
+
+## Reproducibility
+
+Install the dependencies with:
+
+python -m pip install -r requirements.txt
+
+Run the main experiment with:
+
+python src/vm_placement.py --seeds 10 --out-dir results
+
+Run the statistical and bonus analysis with:
+
+python src/research_analysis.py
+python src/sensitivity.py
+
+Run tests with:
+
+python -m pytest -q
+
+The repository includes a GitHub Actions test workflow.
+
+## Repository structure
+
+src/
+  vm_placement.py
+  research_analysis.py
+  sensitivity.py
+  plot_results.py
+
+tests/
+  test_vm_placement.py
+
+results/
+  RESULTS.md
+  primary_summary.csv
+  statistical_tests.csv
+  predictor_ablation.csv
+  confidence_summary.csv
+  threshold_sensitivity.csv
+
+figures/
+  main_results.svg
+  pre_post_shift.svg
+  predictor_ablation.svg
+  threshold_sensitivity.svg
+
+research/
+  related_work.md
+  experimental_analysis.md
+
+report/
+  term_paper.tex
 
 ## AI assistance disclosure
 
-AI assistance (ChatGPT) was used for implementation scaffolding, code organization, debugging support, and report formatting. The experiment is reproducible from the source code and deterministic seeds in this repository. The student should review the code, rerun the experiment, and verify that the final interpretation matches the actual execution before submission.
+ChatGPT was used for implementation scaffolding, debugging support, literature-search support, and document editing. The experiment uses fixed seeds and executable source so that the student can rerun and inspect the work. The CSE-307 brief requires the experimental design, results, and analysis to be understood and owned by the student.
 
-## Source basis
+## Submission
 
-The implementation and terminology are grounded in the supplied CSE-307 term-paper guideline/source notes, especially the Track 4 requirements and the Virtualization/VM/Cloud and Memory Management Part-1 course material.
+Submit the GitHub repository together with the separate 3-page IEEE PDF report. The course brief also requires a short in-class walkthrough/demo.
