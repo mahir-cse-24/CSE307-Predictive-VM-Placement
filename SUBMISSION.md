@@ -1,40 +1,41 @@
 # CSE-307 submission checklist
 
-## Online submission
+## Before submitting
 
-Submit the GitHub repository:
+- [ ] Run all five Ubuntu/VMware resource conditions.
+- [ ] Use the same `results/workload_trace.csv` for all five conditions.
+- [ ] Keep the SHA-256 trace hash unchanged across runs.
+- [ ] Complete three runs for each condition.
+- [ ] Run `python3 src/analyze_system.py`.
+- [ ] Run `python3 src/plot_system.py`.
+- [ ] Check `results/system_experiment.csv` for all expected rows.
+- [ ] Check `results/system_summary.csv`.
+- [ ] Put the measured values into the primary result table in `report/term_paper.tex`.
+- [ ] Compile the LaTeX report and confirm it is 3-4 pages.
+- [ ] Open the compiled PDF and check the tables, figures, references, and student information.
+- [ ] Run the repository tests.
 
-https://github.com/mahir-cse-24/CSE307-Predictive-VM-Placement
+## Required submission items
 
-Submit the separate three-page IEEE PDF report.
+The course instruction asks for a GitHub repository and a 3-4 page PDF term paper. The report should contain in-text citations and references, and the workload must remain the same across experiments.
 
-If the course portal accepts an additional archive, submit the complete ZIP as a backup.
+Submit:
 
-## What the repository contains
+1. GitHub repository: `https://github.com/mahir-cse-24/CSE307-Predictive-VM-Placement`
+2. Compiled IEEE PDF.
+3. Printed copy, where required by the course.
+4. The 3-5 minute walkthrough/demo.
 
-- source code for First-Fit, Best-Fit, regression-based prediction, and the reactive/proactive placement logic;
-- unit tests;
-- reproducible workload generation with fixed seeds;
-- main results and statistical analysis;
-- predictor ablation;
-- threshold-sensitivity pilot;
-- optional explanation-confidence analysis;
-- research notes and related-work references;
-- GitHub Actions workflow for automated tests.
+The repository also keeps the predictive VM-placement study as a separate extension. That material remains in the GitHub submission because it covers the retained Track 4 requirements.
 
-## 3-5 minute walkthrough
+## Walkthrough order
 
-1. Define the problem: static placement uses current load; the workload changes at step 60.
-2. Explain First-Fit and Best-Fit.
-3. Show the regression features and 0.90 proactive threshold.
-4. Show the main result table and the post-shift comparison.
-5. Mention the statistical check, predictor ablation, and optional confidence extension.
-6. State the limitations: one normalized resource, homogeneous hosts, one-step forecast, synthetic trace.
+1. State the research question and show the five VM configurations.
+2. Show that one workload trace is reused in every condition.
+3. Show the OS counters collected from Ubuntu.
+4. Explain the measured changes in memory pressure and CPU allocation.
+5. Briefly show the retained predictive placement results and why it is labelled as an extension.
 
-## Important interpretation
+## Result integrity
 
-The paper does not claim that predictive placement is universally better. The experiment supports the conclusion only for the tested synthetic configuration. The migration result is treated separately from utilization and SLA events, and the optional confidence score is explicitly reported as poorly calibrated.
-
-## Printed copy
-
-The course guideline requires a printed report and a 3-5 minute in-class walkthrough in addition to the GitHub link and soft-copy PDF.
+The Ubuntu/VMware measurements must come from the actual Ubuntu guest. Do not replace missing measurements with values from another computer, a simulation, or an example.
