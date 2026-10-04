@@ -1,21 +1,34 @@
-# Quick run guide
+# Run guide
 
-Install dependencies:
+## Ubuntu/VMware experiment
 
-python -m pip install -r requirements.txt
+Prepare the fixed workload inside the Ubuntu guest:
 
-Run the main ten-seed experiment:
+```bash
+bash scripts/prepare_workload.sh
+```
 
-python src/vm_placement.py --seeds 10 --out-dir results
+Run the five VMware conditions:
 
-Run the statistical checks, predictor ablation, and confidence metrics:
+```bash
+bash scripts/run_condition.sh vm_1gb_1vcpu
+bash scripts/run_condition.sh vm_2gb_1vcpu
+bash scripts/run_condition.sh vm_4gb_1vcpu
+bash scripts/run_condition.sh vm_2gb_2vcpu
+bash scripts/run_condition.sh vm_2gb_4vcpu
+```
 
-python src/research_analysis.py
+The same trace is reused for every condition. After all runs:
 
-Run the small threshold-sensitivity pilot:
+```bash
+python3 src/analyze_system.py
+python3 src/plot_system.py
+```
 
-python src/sensitivity.py
+The main data file is `results/system_experiment.csv`.
 
-Run the unit tests:
+## Retained placement extension
 
-python -m pytest -q
+The original Track 4 simulator remains available under `src/`, with its research analysis and result files under `research/` and `results/`.
+
+Do not replace missing Ubuntu/VMware measurements with simulated values.
